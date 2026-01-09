@@ -1,20 +1,68 @@
-import { promises as fs } from 'node:fs'
-import path from 'node:path'
+import { prisma } from "./prisma"
 
-export type Post = {
+export type PostCreate = {
   slug: string
   title: string
-  summary: string
-  content: string
+  summary?: string
+  content?: string
 }
 
-const FILE = path.join(process.cwd(), 'src', 'data', 'posts.json')
-
-export async function readPosts(): Promise<Post[]> {
-  const raw = await fs.readFile(FILE, 'utf-8')
-  return JSON.parse(raw) as Post[]
+export type PostUpdate = {
+  title?: string
+  summary?: string
+  content?: string
 }
 
-export async function writePosts(posts: Post[]): Promise<void> {
-  await fs.writeFile(FILE, JSON.stringify(posts, null, 2), 'utf-8')
+function cleanUndefined<T extends Record<string, unknown>>(obj: T) {
+  return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined)) as Partial<T>
+}
+
+export async function listPosts() {
+  return prisma.post.findMany({
+    orderBy: { createdAt: "desc" },
+    select: { slug: true, title: true, summary: true, createdAt: true },
+  })
+}
+
+export async function getPost(slug: string) {
+  return prisma.post.findUnique({
+    where: { slug },
+    select: { slug: true, title: true, summary: true, content: true, createdAt: true, updatedAt: true },
+  })
+}
+
+export async function createPost(data: PostCreate) {
+  return prisma.post.create({
+    data: {
+      slug: data.slug,
+      title: data.title,
+      summary: data.summary ?? "",
+      content: data.content ?? "",
+    },
+    select: { slug: true, title: true, summary: true, content: true, createdAt: true, updatedAt: true },
+  })
+}
+
+export async function updatePost(slug: string, patch: PostUpdate) {
+  const exists = await prisma.post.findUnique({ where: { slug }, select: { slug: true } })
+  if (!exists) return null
+
+  const data = cleanUndefined({
+    title: patch.title,
+    summary: patch.summary,
+    content: patch.content,
+  })
+
+  return prisma.post.update({
+    where: { slug },
+    data,
+    select: { slug: true, title: true, summary: true, content: true, createdAt: true, updatedAt: true },
+  })
+}
+
+export async function deletePost(slug: string) {
+  const exists = await prisma.post.findUnique({ where: { slug }, select: { slug: true } })
+  if (!exists) return false
+  await prisma.post.delete({ where: { slug } })
+  return true
 }

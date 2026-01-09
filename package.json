@@ -10,9 +10,14 @@
     "dev:bff": "npm run dev -w apps/bff",
     "dev:web": "npm run dev -w apps/web",
     "build": "npm run build -w apps/web",
-    "start:bff": "npm run start -w apps/bff"
+    "start:bff": "npm run start -w apps/bff",
+    "postinstall": "prisma generate --schema=apps/bff/prisma/schema.prisma"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.2.0",
+    "prisma": "^7.2.0"
   }
 }
