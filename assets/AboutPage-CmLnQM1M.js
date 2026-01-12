@@ -1,0 +1,1 @@
+import{a as e,c as t,d as n,h as r,l as i,m as a,n as o,u as s}from"./index-CChShBLk.js";var c=t({__name:`AboutPage`,setup(t){let c=a([]);return i(async()=>{c.value=(await(await fetch(`/api/profile/about`)).json()).data}),(t,i)=>(s(),e(`div`,null,[(s(!0),e(o,null,n(c.value,(t,n)=>(s(),e(`p`,{key:n,class:`muted`},r(t),1))),128))]))}});export{c as default};

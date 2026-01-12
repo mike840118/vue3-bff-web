@@ -1,1 +1,0 @@
-import{a as e,f as t,i as n,o as r,p as i,s as a,t as o,u as s}from"./index-Cr7yAyXy.js";var c={},l={class:`page`};function u(o,c){let u=t(`RouterLink`);return s(),e(`section`,l,[c[1]||=n(`h1`,null,`404`,-1),c[2]||=n(`p`,{class:`muted`},`找不到頁面`,-1),a(u,{to:`/`},{default:i(()=>[...c[0]||=[r(`回首頁`,-1)]]),_:1})])}var d=o(c,[[`render`,u]]);export{d as default};
